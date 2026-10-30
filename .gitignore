@@ -19,7 +19,11 @@ android_app/*/*.iml
 # Environment & local credentials
 .env
 .env.local
+*recovery*
+docs/*recovery*
 
 # Temporary files & logs
 *.log
 *.tmp
+
+.vercel
