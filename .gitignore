@@ -1,0 +1,25 @@
+# IDE & Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Android build outputs & local config
+android_app/.gradle/
+android_app/build/
+android_app/*/build/
+android_app/local.properties
+android_app/.cxx/
+android_app/*.iml
+android_app/*/*.iml
+
+# Environment & local credentials
+.env
+.env.local
+
+# Temporary files & logs
+*.log
+*.tmp

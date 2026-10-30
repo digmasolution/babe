@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Babe - Jual Beli Barang Bekas</title>
+  <meta name="description" content="Aplikasi Jual Beli Barang Bekas Terpercaya di Sekitar Anda">
+  <meta name="theme-color" content="#2563eb">
+  
+  <!-- Remix Icon CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Mobile Viewport Frame (Centered on Desktop, Full on Mobile) -->
+  <div id="app-viewport">
+    
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="top-bar-brand">
+        <div class="brand-logo">
+          <i class="ri-store-2-fill"></i>
+          <span>Babe</span>
+          <span class="brand-badge">Barang Bekas</span>
+        </div>
+        <div class="top-actions" style="display:flex; align-items:center; gap:8px;">
+          <button id="open-hp-btn" title="Coba Buka di HP" style="background:#eff6ff; color:var(--primary); border:1px solid #bfdbfe; font-size:0.75rem; font-weight:700; display:flex; align-items:center; gap:4px; padding:5px 10px; border-radius:20px; cursor:pointer;" onclick="openHpModal()">
+            <i class="ri-smartphone-line" style="font-size:0.95rem;"></i>
+            <span>Di HP</span>
+          </button>
+          <div id="user-header-btn" style="cursor:pointer; font-size:0.75rem; color:var(--gray-600); display:flex; align-items:center; gap:5px; background:var(--gray-100); padding:5px 10px; border-radius:20px; transition:all 0.2s;" onclick="handleHeaderUserClick()">
+            <i id="user-header-icon" class="ri-user-smile-line" style="color:var(--primary); font-size:0.95rem;"></i>
+            <span id="user-header-name">Masuk</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search & Filter Bar -->
+      <div class="search-container">
+        <div class="search-input-wrapper">
+          <i class="ri-search-line"></i>
+          <input type="text" id="search-input" class="search-input" placeholder="Cari iPhone, helm, stik PS, dll...">
+        </div>
+        <button class="filter-btn" onclick="openFilterModal()">
+          <i class="ri-equalizer-line"></i> Filter
+        </button>
+      </div>
+    </header>
+
+    <!-- Categories Horizontal Carousel -->
+    <nav id="categories-slider" class="categories-slider">
+      <!-- Diisi dinamis via JS -->
+    </nav>
+
+    <!-- TAB VIEW 1: HOME (Katalog Barang) -->
+    <main id="view-home" class="tab-view app-content">
+      <div class="section-title-wrap">
+        <div>
+          <h2 class="section-title">Rekomendasi Bekas Pilihan</h2>
+          <span class="section-subtitle">Kondisi terjamin & siap COD / kirim</span>
+        </div>
+        <button onclick="loadProducts()" class="icon-btn" title="Refresh" style="width:30px; height:30px; font-size:0.9rem;">
+          <i class="ri-refresh-line"></i>
+        </button>
+      </div>
+
+      <div id="product-grid" class="product-grid">
+        <!-- Render kartu produk di sini -->
+      </div>
+    </main>
+
+    <!-- TAB VIEW 2: EXPLORE (Jelajahi) -->
+    <section id="view-explore" class="tab-view app-content" style="display:none;">
+      <div class="section-title-wrap">
+        <h2 class="section-title">Jelajahi Kategori & Kota</h2>
+      </div>
+      <div style="background:#fff; border:1px solid var(--gray-200); border-radius:14px; padding:16px; margin-bottom:14px;">
+        <h4 style="font-size:0.9rem; margin-bottom:10px;">Tips Aman Jual-Beli Barang Bekas:</h4>
+        <ul style="font-size:0.82rem; color:var(--gray-600); padding-left:18px; line-height:1.6;">
+          <li>Utamakan COD (ketemu langsung) di tempat ramai atau aman.</li>
+          <li>Cek kondisi fisik, kelengkapan, dan fungsi barang sebelum bayar.</li>
+          <li>Gunakan fitur Chat WhatsApp untuk negosiasi langsung dengan penjual.</li>
+        </ul>
+      </div>
+
+      <div class="section-title-wrap">
+        <h2 class="section-title">Koleksi Barang Sesuai Kategori</h2>
+      </div>
+      <div id="explore-cat-list" style="display:flex; flex-direction:column; gap:8px;">
+        <!-- Kategori list -->
+      </div>
+    </section>
+
+    <!-- TAB VIEW 3: SELL (Pasang Iklan Barang Bekas) -->
+    <section id="view-sell" class="tab-view app-content" style="display:none;">
+      <div class="section-title-wrap">
+        <div>
+          <h2 class="section-title">Jual Barang Bekas Anda</h2>
+          <span class="section-subtitle">Pasang iklan gratis dalam 1 menit</span>
+        </div>
+      </div>
+
+      <form id="sell-form" onsubmit="handleSellSubmit(event)" style="background:#fff; border:1px solid var(--gray-200); border-radius:16px; padding:16px;">
+        
+        <!-- Upload Foto Produk -->
+        <div class="form-group">
+          <label class="form-label"><i class="ri-camera-lens-line"></i> Foto Barang Bekas</label>
+          <div style="border: 2px dashed var(--gray-200); border-radius:12px; padding:20px; text-align:center; background:var(--gray-100); position:relative; cursor:pointer;" onclick="document.getElementById('sell-image-input').click()">
+            <i class="ri-image-add-line" style="font-size:2.2rem; color:var(--primary);"></i>
+            <p style="font-size:0.82rem; color:var(--gray-600); margin-top:6px; font-weight:600;">Tap untuk ambil foto atau pilih dari galeri</p>
+            <p style="font-size:0.7rem; color:var(--gray-400);">Format: JPG, PNG, WEBP</p>
+            <input type="file" id="sell-image-input" name="image" accept="image/*" style="display:none;" onchange="handleImageSelect(event)">
+          </div>
+          <img id="sell-image-preview" src="" alt="Preview" style="display:none; width:100%; height:180px; object-fit:cover; border-radius:10px; margin-top:10px; border:1px solid var(--gray-200);">
+        </div>
+
+        <!-- URL Gambar Alternatif -->
+        <div class="form-group">
+          <label class="form-label">Atau Masukkan URL Gambar (Opsional)</label>
+          <input type="url" name="image_url" class="form-control" placeholder="https://example.com/foto-barang.jpg">
+        </div>
+
+        <!-- Judul Iklan -->
+        <div class="form-group">
+          <label class="form-label">Judul Iklan *</label>
+          <input type="text" name="title" class="form-control" placeholder="Contoh: Sepeda Lipat Polygon Urbano Mulus" required maxlength="150">
+        </div>
+
+        <!-- Kategori -->
+        <div class="form-group">
+          <label class="form-label">Kategori *</label>
+          <select id="sell-category" name="category_id" class="form-control" required>
+            <!-- Diisi dinamis -->
+          </select>
+        </div>
+
+        <!-- Kondisi Barang -->
+        <div class="form-group">
+          <label class="form-label">Kondisi Barang *</label>
+          <select name="condition_type" class="form-control" required>
+            <option value="seperti_baru">Seperti Baru ⭐ (Jarang pakai / Like new)</option>
+            <option value="mulus" selected>Mulus 👍 (Fungsi normal, minim goresan)</option>
+            <option value="bekas_wajar">Bekas Wajar 📦 (Ada tanda pemakaian biasa)</option>
+            <option value="minus_pemakaian">Minus Pemakaian 🔧 (Ada lecet / butuh servis)</option>
+          </select>
+        </div>
+
+        <!-- Harga Jual dengan Currency Masking Real-time -->
+        <div class="form-group">
+          <label class="form-label">Harga Jual (Rp) *</label>
+          <div style="position:relative; display:flex; align-items:center;">
+            <span style="position:absolute; left:14px; font-weight:800; color:var(--gray-500); font-size:0.95rem; pointer-events:none;">Rp</span>
+            <input type="text" id="sell-price-display" class="form-control" placeholder="0" style="padding-left:44px; font-weight:700; font-size:1.05rem;" required inputmode="numeric">
+            <input type="hidden" id="sell-price-raw" name="price" value="0">
+          </div>
+          <span style="font-size:0.72rem; color:var(--gray-500); margin-top:3px; display:block;">Pemisah ribuan otomatis (contoh: ketik 750000 menjadi Rp 750.000)</span>
+        </div>
+
+        <!-- Lokasi COD -->
+        <div class="form-group">
+          <label class="form-label">Kota / Lokasi COD *</label>
+          <input type="text" id="sell-location" name="location" class="form-control" placeholder="Contoh: Jakarta Selatan / Tebet" required>
+        </div>
+
+        <!-- Deskripsi Barang -->
+        <div class="form-group">
+          <label class="form-label">Deskripsi Lengkap Barang *</label>
+          <textarea name="description" class="form-control" rows="4" placeholder="Jelaskan alasan jual, kelengkapan (dus/kabel), minus pemakaian, dan waktu pembelian..." required></textarea>
+        </div>
+
+        <button type="submit" id="sell-submit-btn" class="btn-primary" style="margin-top:10px;">
+          <i class="ri-upload-cloud-line"></i> Pasang Iklan Sekarang
+        </button>
+      </form>
+    </section>
+
+    <!-- TAB VIEW 4: FAVORITES (Wishlist) -->
+    <section id="view-favorites" class="tab-view app-content" style="display:none;">
+      <div class="section-title-wrap">
+        <div>
+          <h2 class="section-title">Barang Favorit Saya</h2>
+          <span class="section-subtitle">Daftar barang incaran yang Anda simpan</span>
+        </div>
+      </div>
+      <div id="favorites-grid">
+        <!-- Render barang favorit -->
+      </div>
+    </section>
+
+    <!-- TAB VIEW 5: PROFILE & MY LISTINGS -->
+    <section id="view-profile" class="tab-view app-content" style="display:none;">
+      
+      <!-- STATE 1: GUEST / BELUM LOGIN -->
+      <div id="profile-guest-card" style="display:none; background:#fff; border:1px solid var(--gray-200); border-radius:18px; padding:24px 18px; margin-bottom:16px; text-align:center;">
+        <div style="width:72px; height:72px; border-radius:50%; background:var(--primary-light); color:var(--primary); font-size:2rem; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;">
+          <i class="ri-user-add-line"></i>
+        </div>
+        <h3 style="font-size:1.15rem; font-weight:800; color:var(--gray-800); margin-bottom:6px;">Akun Babe Anda</h3>
+        <p style="font-size:0.83rem; color:var(--gray-600); line-height:1.4; margin-bottom:18px;">
+          Daftar akun baru untuk mulai menjual barang bekas, mengelola iklan, dan menghubungi pembeli.
+        </p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <button class="btn-primary" onclick="openAuthModal('register')">
+            <i class="ri-user-add-line"></i> Daftar Akun Baru
+          </button>
+          <button class="btn-secondary" onclick="openAuthModal('login')">
+            <i class="ri-login-box-line"></i> Sudah Punya Akun? Masuk
+          </button>
+        </div>
+
+        <div style="margin-top:20px; padding-top:14px; border-top:1px dashed var(--gray-200);">
+          <div style="display:flex; align-items:center; justify-content:center; gap:6px; margin-bottom:8px;">
+            <span style="font-size:0.7rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px; background:var(--primary-light); padding:3px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:4px;">
+              <i class="ri-flashlight-fill"></i> 1-Klik Login Akun Demo
+            </span>
+          </div>
+          <p style="font-size:0.73rem; color:var(--gray-500); text-align:center; margin-bottom:10px;">
+            Pilih peran standar marketplace untuk uji coba instan:
+          </p>
+          <div class="demo-role-grid">
+            <button type="button" class="demo-role-card" onclick="loginAsDemo('pembeli')">
+              <div class="demo-role-icon" style="background:#e0f2fe; color:#0369a1;">
+                <i class="ri-shopping-bag-3-line"></i>
+              </div>
+              <div class="demo-role-info">
+                <span class="demo-role-badge badge-pembeli">🛒 Pembeli</span>
+                <span class="demo-role-name">Rian Pratama</span>
+                <span class="demo-role-desc">Cari & Beli Preloved</span>
+              </div>
+            </button>
+            <button type="button" class="demo-role-card" onclick="loginAsDemo('penjual')">
+              <div class="demo-role-icon" style="background:#dcfce7; color:#15803d;">
+                <i class="ri-store-2-line"></i>
+              </div>
+              <div class="demo-role-info">
+                <span class="demo-role-badge badge-penjual">🏪 Penjual</span>
+                <span class="demo-role-name">Budi Santoso</span>
+                <span class="demo-role-desc">Pasang & Kelola Iklan</span>
+              </div>
+            </button>
+            <button type="button" class="demo-role-card" onclick="loginAsDemo('logistik')">
+              <div class="demo-role-icon" style="background:#fef3c7; color:#b45309;">
+                <i class="ri-truck-line"></i>
+              </div>
+              <div class="demo-role-info">
+                <span class="demo-role-badge badge-logistik">🚚 Logistik</span>
+                <span class="demo-role-name">Babe Express</span>
+                <span class="demo-role-desc">Kurir & Inspeksi COD</span>
+              </div>
+            </button>
+            <button type="button" class="demo-role-card" onclick="loginAsDemo('admin')">
+              <div class="demo-role-icon" style="background:#f3e8ff; color:#7e22ce;">
+                <i class="ri-shield-check-line"></i>
+              </div>
+              <div class="demo-role-info">
+                <span class="demo-role-badge badge-admin">🛡️ Admin</span>
+                <span class="demo-role-name">Admin Support</span>
+                <span class="demo-role-desc">Moderasi Platform</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATE 2: LOGGED IN / SUDAH LOGIN -->
+      <div id="profile-user-card" style="display:none; background:#fff; border:1px solid var(--gray-200); border-radius:18px; padding:18px; margin-bottom:16px;">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div id="profile-avatar-box" style="width:62px; height:62px; border-radius:50%; background:linear-gradient(135deg, #2563eb, #3b82f6); color:#fff; font-size:1.5rem; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 4px 10px rgba(37,99,235,0.25);">
+            <span id="profile-avatar-text">B</span>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <h3 id="profile-name" style="font-size:1.1rem; font-weight:800; color:var(--gray-800); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Budi Santoso</h3>
+              <span id="profile-role-badge" class="demo-role-badge badge-penjual">🏪 PENJUAL</span>
+            </div>
+            <p id="profile-email" style="font-size:0.78rem; color:var(--gray-400); margin:2px 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">budi@example.com</p>
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:4px; font-size:0.76rem; color:var(--gray-600);">
+              <span id="profile-phone"><i class="ri-whatsapp-line" style="color:#22c55e;"></i> 081234567890</span>
+              <span>•</span>
+              <span id="profile-city"><i class="ri-map-pin-line" style="color:var(--primary);"></i> Jakarta Selatan</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Statistik Iklan -->
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px; margin-top:16px; padding:12px; background:var(--gray-100); border-radius:12px; text-align:center;">
+          <div>
+            <div id="profile-stat-total" style="font-size:1.1rem; font-weight:800; color:var(--dark);">0</div>
+            <div style="font-size:0.7rem; color:var(--gray-600); font-weight:600;">Total Iklan</div>
+          </div>
+          <div>
+            <div id="profile-stat-active" style="font-size:1.1rem; font-weight:800; color:var(--primary);">0</div>
+            <div style="font-size:0.7rem; color:var(--gray-600); font-weight:600;">Tersedia</div>
+          </div>
+          <div>
+            <div id="profile-stat-sold" style="font-size:1.1rem; font-weight:800; color:var(--secondary);">0</div>
+            <div style="font-size:0.7rem; color:var(--gray-600); font-weight:600;">Terjual</div>
+          </div>
+        </div>
+
+        <!-- Tombol Aksi Profil -->
+        <div style="display:flex; gap:8px; margin-top:14px;">
+          <button class="btn-secondary" style="flex:1; font-size:0.8rem; padding:9px;" onclick="openEditProfileModal()">
+            <i class="ri-edit-line"></i> Edit Profil
+          </button>
+          <button class="btn-secondary" style="font-size:0.8rem; padding:9px 14px; color:var(--danger); border-color:#fecaca;" onclick="handleLogout()">
+            <i class="ri-logout-box-r-line"></i> Keluar
+          </button>
+        </div>
+
+        <!-- Quick Role Switcher for Logged In User -->
+        <div style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--gray-200);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:0.7rem; font-weight:700; color:var(--gray-500); text-transform:uppercase;">Ganti Peran Akun Demo</span>
+            <span style="font-size:0.68rem; color:var(--primary); font-weight:700;">1-Klik Beralih</span>
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px;">
+            <button class="btn-secondary" style="font-size:0.68rem; padding:6px 2px; display:flex; flex-direction:column; align-items:center; gap:3px;" onclick="loginAsDemo('pembeli')">
+              <i class="ri-shopping-bag-3-line" style="color:#0369a1; font-size:1.05rem;"></i>
+              <span>Pembeli</span>
+            </button>
+            <button class="btn-secondary" style="font-size:0.68rem; padding:6px 2px; display:flex; flex-direction:column; align-items:center; gap:3px;" onclick="loginAsDemo('penjual')">
+              <i class="ri-store-2-line" style="color:#15803d; font-size:1.05rem;"></i>
+              <span>Penjual</span>
+            </button>
+            <button class="btn-secondary" style="font-size:0.68rem; padding:6px 2px; display:flex; flex-direction:column; align-items:center; gap:3px;" onclick="loginAsDemo('logistik')">
+              <i class="ri-truck-line" style="color:#b45309; font-size:1.05rem;"></i>
+              <span>Logistik</span>
+            </button>
+            <button class="btn-secondary" style="font-size:0.68rem; padding:6px 2px; display:flex; flex-direction:column; align-items:center; gap:3px;" onclick="loginAsDemo('admin')">
+              <i class="ri-shield-check-line" style="color:#7e22ce; font-size:1.05rem;"></i>
+              <span>Admin</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Iklan Saya -->
+      <div id="profile-my-ads-section" style="display:none;">
+        <div class="section-title-wrap">
+          <div>
+            <h2 class="section-title">Kelola Iklan Saya</h2>
+            <span class="section-subtitle">Tandai terjual atau hapus barang Anda</span>
+          </div>
+        </div>
+        <div id="my-products-list">
+          <!-- Render barang saya -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+      <div class="nav-item active" data-tab="home">
+        <i class="ri-home-5-line"></i>
+        <span>Beranda</span>
+      </div>
+      <div class="nav-item" data-tab="explore">
+        <i class="ri-compass-3-line"></i>
+        <span>Jelajahi</span>
+      </div>
+      <div class="nav-item nav-item-sell" data-tab="sell">
+        <div class="sell-btn-circle">
+          <i class="ri-add-line"></i>
+        </div>
+        <span style="position:relative; top:-2px; font-weight:700; color:var(--primary);">Jual</span>
+      </div>
+      <div class="nav-item" data-tab="favorites">
+        <i class="ri-heart-3-line"></i>
+        <span>Favorit</span>
+      </div>
+      <div class="nav-item" data-tab="profile">
+        <i class="ri-user-3-line"></i>
+        <span>Akun</span>
+      </div>
+    </nav>
+
+    <!-- MODAL DETAIL BARANG (Bottom Sheet) -->
+    <div id="detail-modal" class="modal-overlay" onclick="if(event.target === this) closeDetailModal()">
+      <div class="modal-container">
+        <div class="modal-header">
+          <span class="modal-title">Detail Barang Bekas</span>
+          <button class="icon-btn" onclick="closeDetailModal()">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+        <div id="detail-modal-body" class="modal-body">
+          <!-- Diisi dinamis via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL FILTER PENCARIAN -->
+    <div id="filter-modal" class="modal-overlay" onclick="if(event.target === this) closeFilterModal()">
+      <div class="modal-container" style="max-height:80vh;">
+        <div class="modal-header">
+          <span class="modal-title">Filter Barang</span>
+          <button class="icon-btn" onclick="closeFilterModal()">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Urutkan Berdasarkan</label>
+            <select id="filter-sort" class="form-control">
+              <option value="newest">Paling Baru Diiklankan</option>
+              <option value="price_asc">Harga: Termurah ke Termahal</option>
+              <option value="price_desc">Harga: Termahal ke Termurah</option>
+              <option value="popular">Paling Banyak Dilihat</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Kondisi Fisik Barang</label>
+            <select id="filter-condition" class="form-control">
+              <option value="">Semua Kondisi</option>
+              <option value="seperti_baru">Seperti Baru ⭐</option>
+              <option value="mulus">Mulus 👍</option>
+              <option value="bekas_wajar">Bekas Wajar 📦</option>
+              <option value="minus_pemakaian">Minus Pemakaian 🔧</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Rentang Harga (Rp)</label>
+            <div style="display:flex; gap:8px;">
+              <input type="number" id="filter-min-price" class="form-control" placeholder="Min">
+              <input type="number" id="filter-max-price" class="form-control" placeholder="Max">
+            </div>
+          </div>
+
+          <button class="btn-primary" onclick="applyFilters()" style="margin-top:12px;">
+            Terapkan Filter
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL AUTENTIKASI: MASUK & DAFTAR AKUN BARU -->
+    <div id="auth-modal" class="modal-overlay" onclick="if(event.target === this) closeAuthModal()">
+      <div class="modal-container" style="max-height:85vh;">
+        <div class="modal-header">
+          <div style="display:flex; gap:6px; background:var(--gray-100); padding:4px; border-radius:10px;">
+            <button id="auth-tab-btn-login" class="auth-tab-btn active" type="button" onclick="switchAuthTab('login')">
+              Masuk
+            </button>
+            <button id="auth-tab-btn-register" class="auth-tab-btn" type="button" onclick="switchAuthTab('register')">
+              Daftar Baru
+            </button>
+          </div>
+          <button class="icon-btn" type="button" onclick="closeAuthModal()">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <!-- TAB 1: FORM LOGIN -->
+          <div id="auth-tab-login">
+            <div style="text-align:center; margin-bottom:16px;">
+              <h3 style="font-size:1.1rem; font-weight:800; color:var(--gray-800);">Selamat Datang Kembali</h3>
+              <p style="font-size:0.8rem; color:var(--gray-600);">Masuk ke akun Babe Anda untuk melanjutkan transaksi</p>
+            </div>
+            <form id="form-login" onsubmit="handleLoginSubmit(event)">
+              <div class="form-group">
+                <label class="form-label">Email Terdaftar *</label>
+                <input type="email" id="login-email" class="form-control" placeholder="nama@email.com" required autocomplete="email">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Kata Sandi *</label>
+                <input type="password" id="login-password" class="form-control" placeholder="Minimal 6 karakter" required autocomplete="current-password">
+              </div>
+              <button type="submit" id="btn-login-submit" class="btn-primary" style="margin-top:10px;">
+                <i class="ri-login-box-line"></i> Masuk Sekarang
+              </button>
+            </form>
+
+            <!-- 1-KLIK LOGIN DEMO ROLES (STANDAR ONLINE SHOP) -->
+            <div style="margin-top:18px; padding-top:14px; border-top:1px dashed var(--gray-200);">
+              <div style="display:flex; align-items:center; justify-content:center; gap:6px; margin-bottom:8px;">
+                <span style="font-size:0.7rem; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.5px; background:var(--primary-light); padding:3px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:4px;">
+                  <i class="ri-flashlight-fill"></i> 1-Klik Login Akun Demo
+                </span>
+              </div>
+              <p style="font-size:0.73rem; color:var(--gray-500); text-align:center; margin-bottom:10px;">
+                Langsung masuk tanpa ketik password sesuai peran:
+              </p>
+              
+              <div class="demo-role-grid">
+                <!-- 1. Pembeli -->
+                <button type="button" class="demo-role-card" onclick="loginAsDemo('pembeli')">
+                  <div class="demo-role-icon" style="background:#e0f2fe; color:#0369a1;">
+                    <i class="ri-shopping-bag-3-line"></i>
+                  </div>
+                  <div class="demo-role-info">
+                    <span class="demo-role-badge badge-pembeli">🛒 Pembeli</span>
+                    <span class="demo-role-name">Rian Pratama</span>
+                    <span class="demo-role-desc">Cari & Beli Preloved</span>
+                  </div>
+                </button>
+
+                <!-- 2. Penjual -->
+                <button type="button" class="demo-role-card" onclick="loginAsDemo('penjual')">
+                  <div class="demo-role-icon" style="background:#dcfce7; color:#15803d;">
+                    <i class="ri-store-2-line"></i>
+                  </div>
+                  <div class="demo-role-info">
+                    <span class="demo-role-badge badge-penjual">🏪 Penjual</span>
+                    <span class="demo-role-name">Budi Santoso</span>
+                    <span class="demo-role-desc">Pasang & Kelola Iklan</span>
+                  </div>
+                </button>
+
+                <!-- 3. Penyedia Logistik / Kurir -->
+                <button type="button" class="demo-role-card" onclick="loginAsDemo('logistik')">
+                  <div class="demo-role-icon" style="background:#fef3c7; color:#b45309;">
+                    <i class="ri-truck-line"></i>
+                  </div>
+                  <div class="demo-role-info">
+                    <span class="demo-role-badge badge-logistik">🚚 Logistik</span>
+                    <span class="demo-role-name">Babe Express</span>
+                    <span class="demo-role-desc">Kurir & Inspeksi COD</span>
+                  </div>
+                </button>
+
+                <!-- 4. Admin Marketplace -->
+                <button type="button" class="demo-role-card" onclick="loginAsDemo('admin')">
+                  <div class="demo-role-icon" style="background:#f3e8ff; color:#7e22ce;">
+                    <i class="ri-shield-check-line"></i>
+                  </div>
+                  <div class="demo-role-info">
+                    <span class="demo-role-badge badge-admin">🛡️ Admin</span>
+                    <span class="demo-role-name">Admin Support</span>
+                    <span class="demo-role-desc">Moderasi Platform</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <div style="text-align:center; margin-top:16px; font-size:0.82rem; color:var(--gray-600);">
+              Belum punya akun? <a href="javascript:void(0)" onclick="switchAuthTab('register')" style="color:var(--primary); font-weight:700; text-decoration:none;">Daftar Akun Baru</a>
+            </div>
+          </div>
+
+          <!-- TAB 2: FORM REGISTER (PENCATATAN AKUN BARU) -->
+          <div id="auth-tab-register" style="display:none;">
+            <div style="text-align:center; margin-bottom:14px;">
+              <h3 style="font-size:1.1rem; font-weight:800; color:var(--gray-800);">Pencatatan Akun Baru</h3>
+              <p style="font-size:0.8rem; color:var(--gray-600);">Isi data lengkap Anda untuk bergabung di Babe</p>
+            </div>
+            <form id="form-register" onsubmit="handleRegisterSubmit(event)">
+              <div class="form-group">
+                <label class="form-label">Nama Lengkap *</label>
+                <input type="text" id="reg-name" class="form-control" placeholder="Contoh: Budi Santoso" required maxlength="100" autocomplete="name">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Nomor WhatsApp / HP Aktif *</label>
+                <input type="tel" id="reg-phone" class="form-control" placeholder="Contoh: 081234567890" required maxlength="20" autocomplete="tel">
+                <span style="font-size:0.7rem; color:var(--gray-400); display:block; margin-top:3px;">Digunakan pembeli untuk menghubungi via WhatsApp</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Kota / Lokasi Domisili *</label>
+                <input type="text" id="reg-city" class="form-control" placeholder="Contoh: Jakarta Selatan, Bandung, Surabaya" required maxlength="100">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Alamat Email *</label>
+                <input type="email" id="reg-email" class="form-control" placeholder="nama@email.com" required maxlength="100" autocomplete="email">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Kata Sandi *</label>
+                <input type="password" id="reg-password" class="form-control" placeholder="Minimal 6 karakter" minlength="6" required autocomplete="new-password">
+              </div>
+              <button type="submit" id="btn-register-submit" class="btn-primary" style="margin-top:10px;">
+                <i class="ri-user-add-line"></i> Simpan & Buat Akun
+              </button>
+            </form>
+            <div style="text-align:center; margin-top:14px; font-size:0.82rem; color:var(--gray-600);">
+              Sudah punya akun? <a href="javascript:void(0)" onclick="switchAuthTab('login')" style="color:var(--primary); font-weight:700; text-decoration:none;">Masuk Disini</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL EDIT PROFIL -->
+    <div id="edit-profile-modal" class="modal-overlay" onclick="if(event.target === this) closeEditProfileModal()">
+      <div class="modal-container" style="max-height:80vh;">
+        <div class="modal-header">
+          <span class="modal-title">Edit Data Akun</span>
+          <button class="icon-btn" type="button" onclick="closeEditProfileModal()">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="form-edit-profile" onsubmit="handleEditProfileSubmit(event)">
+            <div class="form-group">
+              <label class="form-label">Nama Lengkap *</label>
+              <input type="text" id="edit-name" class="form-control" required maxlength="100">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nomor WhatsApp / HP Aktif *</label>
+              <input type="tel" id="edit-phone" class="form-control" required maxlength="20">
+              <span style="font-size:0.7rem; color:var(--gray-400); display:block; margin-top:3px;">Nomor ini yang terhubung langsung ke tombol Chat WA</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Kota / Lokasi COD *</label>
+              <input type="text" id="edit-city" class="form-control" required maxlength="100">
+            </div>
+            <button type="submit" id="btn-edit-profile-submit" class="btn-primary" style="margin-top:10px;">
+              <i class="ri-check-line"></i> Simpan Perubahan
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL BUKA DI HP (QR CODE & WIFI) -->
+    <div id="hp-modal" class="modal-overlay" onclick="if(event.target === this) closeHpModal()">
+      <div class="modal-container" style="max-height:90vh;">
+        <div class="modal-header">
+          <span class="modal-title" style="display:flex; align-items:center; gap:6px;">
+            <i class="ri-smartphone-line" style="color:var(--primary);"></i> Coba Babe di HP
+          </span>
+          <button class="icon-btn" type="button" onclick="closeHpModal()">
+            <i class="ri-close-line"></i>
+          </button>
+        </div>
+        <div class="modal-body" style="text-align:center; padding:18px;">
+          <p style="font-size:0.85rem; color:var(--gray-600); margin-bottom:14px;">
+            Pastikan HP dan Laptop terhubung ke <strong>Wi-Fi yang sama</strong>.
+          </p>
+
+          <div style="background:#f8fafc; border:2px dashed #cbd5e1; border-radius:16px; padding:14px; display:inline-block; margin-bottom:14px;">
+            <img id="hp-modal-qr" src="" alt="QR Code" style="width:190px; height:190px; border-radius:10px; display:block; background:#fff; margin:0 auto;">
+            <div style="font-size:0.75rem; color:var(--gray-600); margin-top:8px; display:flex; align-items:center; justify-content:center; gap:4px;">
+              <i class="ri-qr-scan-2-line"></i> Arahkan kamera HP ke QR Code
+            </div>
+          </div>
+
+          <div style="background:#f1f5f9; border:1px solid #e2e8f0; border-radius:12px; padding:10px 12px; display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:16px;">
+            <span id="hp-modal-url" style="font-family:monospace; font-size:0.82rem; font-weight:700; color:var(--primary); word-break:break-all; text-align:left;">Memuat URL...</span>
+            <button type="button" class="btn-primary" style="padding:6px 10px; font-size:0.75rem; border-radius:8px; white-space:nowrap;" onclick="copyHpModalUrl()">
+              <i class="ri-file-copy-line"></i> Salin
+            </button>
+          </div>
+
+          <div style="text-align:left; font-size:0.8rem; color:var(--gray-600); background:#f8fafc; padding:12px; border-radius:12px; margin-bottom:16px; line-height:1.5;">
+            <div style="margin-bottom:6px;"><strong>1. Wi-Fi:</strong> HP & Laptop di jaringan Wi-Fi yang sama.</div>
+            <div style="margin-bottom:6px;"><strong>2. Buka di HP:</strong> Scan QR code di atas dengan kamera HP, atau ketik alamat link di Chrome/Safari.</div>
+            <div><strong>3. Siap:</strong> Tampilan responsif mobile langsung aktif seperti aplikasi asli!</div>
+          </div>
+
+          <a href="connect.php" target="_blank" class="btn-secondary" style="display:block; text-align:center; padding:10px; font-size:0.85rem; border-radius:12px; text-decoration:none;">
+            <i class="ri-external-link-line"></i> Buka Halaman Panduan Lengkap
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM SHEET DIALOG KONFIRMASI UNIVERSAL (STANDAR INDUSTRI) -->
+    <div id="confirm-sheet-overlay" class="confirm-sheet-overlay" onclick="if(event.target === this) closeConfirmDialog(false)">
+      <div class="confirm-sheet-card">
+        <div class="confirm-sheet-drag-handle"></div>
+        <div id="confirm-sheet-icon-box" class="confirm-sheet-icon-box danger">
+          <i id="confirm-sheet-icon" class="ri-logout-box-r-line"></i>
+        </div>
+        <h3 id="confirm-sheet-title" class="confirm-sheet-title">Keluar dari Akun?</h3>
+        <p id="confirm-sheet-desc" class="confirm-sheet-desc">Apakah Anda yakin ingin keluar dari akun ini?</p>
+        
+        <div class="confirm-sheet-actions">
+          <button id="confirm-sheet-btn-action" class="confirm-sheet-btn-primary danger" type="button">
+            Ya, Lanjutkan
+          </button>
+          <button id="confirm-sheet-btn-cancel" class="confirm-sheet-btn-secondary" type="button" onclick="closeConfirmDialog(false)">
+            Batal
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- JavaScript -->
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
